@@ -1,8 +1,7 @@
 const userController = {};
 
 userController.get = (req, res, next) => {
-  res.send({ user: "Hello" });
-  next();
+  res.send([{ name: "Hello", completed: true }]);
 };
 
 module.exports = userController;
