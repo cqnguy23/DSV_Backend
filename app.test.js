@@ -45,18 +45,17 @@ describe("Todos API", () => {
 
   it("GET single product --> object of selected product", async () => {
     return request(app)
-      .get("/api/products/:id")
+      .get("/api/products/6136ffbe0b3cdba52cd93609")
       .expect("Content-Type", /json/)
       .expect(200)
       .then((response) => {
         expect(response.body).toEqual(
           expect.objectContaining({
+            _id: expect.any(String),
             name: expect.any(String),
             size: expect.any(String),
             quantity: expect.any(Number),
             color: expect.any(String),
-            rating: expect.any(Number),
-            reviewsID: expect.arrayContaining([expect.any(String)]),
           })
         );
       });
