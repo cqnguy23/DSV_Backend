@@ -14,11 +14,12 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public")));
 mongoose.connect(MONGODB_URI).then(() => {
   console.log("Connected to MONGODB");
 });
-
+app.get("/", (req, res, next) => {
+  res.send("Welcome to DSV's Backend");
+});
 app.use("/api", indexRouter);
 
 module.exports = app;
