@@ -1,4 +1,4 @@
-const Product = require("../models/Product.model");
+import Product from "../models/Product.model.js";
 
 const productsController = {};
 
@@ -27,4 +27,4 @@ productsController.getSingleProduct = async (req, res, next) => {
   }
 };
 
-module.exports = productsController;
+export default productsController;

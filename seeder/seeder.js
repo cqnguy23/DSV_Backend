@@ -1,6 +1,6 @@
-const jsdom = require("jsdom");
-const Product = require("./models/Product.model");
-const mongoose = require("mongoose");
+import jsdom from "jsdom";
+import Product from "../models/Product.model";
+import mongoose from "mongoose";
 require("dotenv").config();
 const { JSDOM } = jsdom;
 const fetch = (...args) =>

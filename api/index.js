@@ -1,9 +1,10 @@
-const express = require("express");
-const router = express.Router();
-const userApi = require("./users");
-const productsApi = require("./products");
+import express from "express";
+import userApi from "./users.js";
+import productsApi from "./products.js";
 /* GET home page. */
+const router = express.Router();
+
 router.use("/users", userApi);
 
 router.use("/products", productsApi);
-module.exports = router;
+export default router;

@@ -1,4 +1,4 @@
-const Product = require("./models/Product.model");
+const Product = require("../models/Product.model");
 const mongoose = require("mongoose");
 
 const MONGODB_URI = "mongodb://localhost:27017/dsv";

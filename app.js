@@ -1,11 +1,13 @@
-const express = require("express");
-const path = require("path");
-const cookieParser = require("cookie-parser");
-const logger = require("morgan");
-const cors = require("cors");
-require("dotenv").config();
-const mongoose = require("mongoose");
-const indexRouter = require("./api/index");
+import express from "express";
+import cookieParser from "cookie-parser";
+import logger from "morgan";
+import cors from "cors";
+import env from "dotenv";
+import mongoose from "mongoose";
+import indexRouter from "./api/index.js";
+
+env.config();
+
 const MONGODB_URI = process.env.MONGODB_URI;
 const app = express();
 console.log(MONGODB_URI);
@@ -22,4 +24,4 @@ app.get("/", (req, res, next) => {
 });
 app.use("/api", indexRouter);
 
-module.exports = app;
+export default app;
