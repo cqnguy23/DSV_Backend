@@ -1,25 +1,9 @@
-const { describe } = require("jest-circus");
-require("jest-extended");
+import { describe } from "jest-circus";
+import "jest-extended";
 
-const request = require("supertest");
-const app = require("./app");
-describe("Todos API", () => {
-  it("GET /users --> array todos", async () => {
-    return request(app)
-      .get("/api/users")
-      .expect("Content-Type", /json/)
-      .expect(200)
-      .then((response) => {
-        expect(response.body).toEqual(
-          expect.arrayContaining([
-            expect.objectContaining({
-              name: expect.any(String),
-              completed: expect.any(Boolean),
-            }),
-          ])
-        );
-      });
-  });
+import request from "supertest";
+import app from "./app";
+describe("Products API", () => {
   it("GET /products --> array of products and number of total products", async () => {
     return request(app)
       .get("/api/products")
@@ -45,7 +29,7 @@ describe("Todos API", () => {
 
   it("GET single product --> object of selected product", async () => {
     return request(app)
-      .get("/api/products/6136ffbe0b3cdba52cd93609")
+      .get("/api/products/61388a8282a9cc24b4dae7ee")
       .expect("Content-Type", /json/)
       .expect(200)
       .then((response) => {
@@ -60,9 +44,4 @@ describe("Todos API", () => {
         );
       });
   });
-
-  it("GET /todos/id --> specific todos by ID", () => {});
-  it("GET /todos/id --> 404 if not found", () => {});
-  it("POST /todos --> created todo", () => {});
-  it("GET /todos --> validates request body", () => {});
 });

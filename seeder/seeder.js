@@ -1,7 +1,10 @@
 import jsdom from "jsdom";
-import Product from "../models/Product.model";
+import Product from "../models/Product.model.js";
 import mongoose from "mongoose";
-require("dotenv").config();
+import bcrypt from "bcrypt";
+import env from "dotenv";
+import User from "../models/user.model.js";
+env.config();
 const { JSDOM } = jsdom;
 const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
@@ -37,6 +40,7 @@ const webScraper = async () => {
     let name = titleArray[i];
     let price = priceArray[i];
     let imgURL = imgArray[i];
+    let size = sizeArray[Math.floor(Math.random() * 3)];
     let color = "White";
     if (name.toLowerCase().includes("black")) {
       color = "Black";
@@ -62,14 +66,35 @@ const webScraper = async () => {
       price: price,
       imgURL: imgURL,
       color: color,
-      size: sizeArray[Math.floor(Math.random() * 3)],
+      size: size,
       quantity: Math.ceil(Math.random() * 10),
     };
-    let productObj = await Product.create(product);
+    await Product.create(product);
+    let newArr = sizeArray.filter((elem) => elem != size);
+    product = {
+      ...product,
+      size: newArr[Math.floor(Math.random() * 2)],
+      quantity: Math.ceil(Math.random() * 10),
+    };
+
+    await Product.create(product);
     productsArray.push(product);
   }
+};
+
+const createAdmin = async () => {
+  const salt = await bcrypt.genSalt(10);
+  const password = "123";
+  const pwd = await bcrypt.hash(password, salt);
+  await User.create({
+    email: "quyenchuong1998@gmail.com",
+    password: pwd,
+    role: "seller",
+  });
 };
 mongoose.connect(MONGODB_URI).then(() => {
   console.log("Mongoose connected");
 });
+
 webScraper();
+createAdmin();
