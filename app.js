@@ -10,7 +10,6 @@ env.config();
 
 const MONGODB_URI = process.env.MONGODB_URI;
 const app = express();
-console.log(MONGODB_URI);
 app.use(cors());
 app.use(logger("dev"));
 app.use(express.json());

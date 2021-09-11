@@ -3,7 +3,7 @@ import("jest-extended");
 import bcrypt from "bcrypt";
 import request from "supertest";
 import app from "../app.js";
-import User from "../models/user.model.js";
+import User from "../models/User.model.js";
 describe("auth API", () => {
   it("POST register --> saved to database and return access token", async () => {
     const email = "chuong125";
@@ -13,7 +13,6 @@ describe("auth API", () => {
       name: "Chuong",
     });
     const user = await User.findOne({ email: email });
-    console.log(res.body);
     expect(user.name).toBeTruthy();
     expect(user.email).toBeTruthy();
     expect(res.body.accessToken).toBeTruthy();
@@ -25,7 +24,6 @@ describe("auth API", () => {
       email: email,
       password: "3123",
     });
-    console.log(res.body);
     expect(res.body.accessToken).toBeTruthy();
   });
 });

@@ -4,14 +4,13 @@ const Schema = mongoose.Schema;
 const productSchema = new Schema(
   {
     name: String,
-    size: {
+    size: { s: Number, m: Number, l: Number },
+    gender: {
       type: String,
-      enum: ["s", "m", "l"],
-      default: "m",
+      enum: ["men", "women"],
     },
-    imgURL: String,
+    imgURL: [String],
     category: String,
-    quantity: Number,
     price: Number,
     color: {
       type: String,
@@ -26,8 +25,9 @@ const productSchema = new Schema(
         "Brown",
         "Green",
         "Grey",
+        "Other",
       ],
-      default: "black",
+      default: "Black",
     },
     rating: Number,
     reviewsID: [
