@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 const Schema = mongoose.Schema;
-const cartSchema = new Schema(
+const orderSchema = new Schema(
   {
     owner: {
       type: Schema.ObjectId,
@@ -18,6 +18,6 @@ const cartSchema = new Schema(
   }
 );
 
-const Cart = mongoose.model("Cart", cartSchema);
+const Order = mongoose.model("Order", orderSchema);
 
-export default Cart;
+export default Order;

@@ -7,7 +7,7 @@ const productSchema = new Schema(
     size: { s: Number, m: Number, l: Number },
     gender: {
       type: String,
-      enum: ["men", "women"],
+      enum: ["men", "women", "boys", "girls"],
     },
     imgURL: [String],
     category: String,

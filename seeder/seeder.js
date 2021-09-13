@@ -192,6 +192,176 @@ const webScraperMale = async () => {
 
   console.log("Finished men's seeding");
 };
+
+const webScraperBoys = async () => {
+  const resp = await fetch(
+    "https://www.edgeclothing.com.au/collections/st-goliath-8-16"
+  );
+  const text = await resp.text();
+  const dom = new JSDOM(text);
+  let imgArray = [];
+  let imgQuery = [];
+  let titleArray = [];
+  let priceArray = [];
+  let img = dom.window.document.getElementsByClassName("imgcontain");
+  let info = dom.window.document.getElementsByClassName("info");
+
+  for (let i = 0; i < img.length; i++) {
+    imgArray.push([]);
+    imgQuery.push(
+      "https://www.edgeclothing.com.au" + img[i].querySelector("a").href
+    );
+  }
+
+  for (let i = 0; i < info.length; i++) {
+    const imgResp = await fetch(imgQuery[i]);
+    const imgText = await imgResp.text();
+    const imgDom = new JSDOM(imgText);
+    const imgCollection = imgDom.window.document.getElementsByClassName(
+      "product__thumb-item"
+    );
+    for (let j = 0; j < imgCollection.length; j++) {
+      imgArray[i].push("https:" + imgCollection[j].querySelector("a").href);
+    }
+    // console.log(imgArray[i]);
+
+    titleArray.push(info[i].querySelector("a").title);
+    let price = info[i]
+      .getElementsByClassName("money")[1]
+      .innerHTML.split("$")[1]
+      .split(" ")[0];
+
+    priceArray.push(Number(price));
+
+    let name = titleArray[i];
+    let imgURL = imgArray[i];
+    let size = {
+      s: Math.floor(Math.random() * 11),
+      m: Math.floor(Math.random() * 11),
+      l: Math.floor(Math.random() * 11),
+    };
+    let color = "Other";
+    if (name.toLowerCase().includes("black")) {
+      color = "Black";
+    } else if (name.toLowerCase().includes("blue")) {
+      color = "Blue";
+    } else if (name.toLowerCase().includes("coal")) {
+      color = "Coal";
+    } else if (name.toLowerCase().includes("grey")) {
+      color = "Grey";
+    } else if (name.toLowerCase().includes("white")) {
+      color = "White";
+    } else if (name.toLowerCase().includes("red")) {
+      color = "Red";
+    } else if (name.toLowerCase().includes("pink")) {
+      color = "Pink";
+    } else if (name.toLowerCase().includes("brown")) {
+      color = "Brown";
+    } else if (name.toLowerCase().includes("green")) {
+      color = "Green";
+    }
+    let product = {
+      name: name,
+      price: price,
+      imgURL: imgURL,
+      gender: "boys",
+      color: color,
+      size: size,
+    };
+    await Product.create(product);
+  }
+  fs.writeFileSync(
+    path.resolve(__dirname, "imgArray.json"),
+    JSON.stringify(imgArray)
+  );
+
+  console.log("Finished boys' seeding");
+};
+
+const webScraperGirls = async () => {
+  const resp = await fetch(
+    "https://www.edgeclothing.com.au/collections/eve-sister-1"
+  );
+  const text = await resp.text();
+  const dom = new JSDOM(text);
+  let imgArray = [];
+  let imgQuery = [];
+  let titleArray = [];
+  let priceArray = [];
+  let img = dom.window.document.getElementsByClassName("imgcontain");
+  let info = dom.window.document.getElementsByClassName("info");
+
+  for (let i = 0; i < img.length; i++) {
+    imgArray.push([]);
+    imgQuery.push(
+      "https://www.edgeclothing.com.au" + img[i].querySelector("a").href
+    );
+  }
+
+  for (let i = 0; i < info.length; i++) {
+    const imgResp = await fetch(imgQuery[i]);
+    const imgText = await imgResp.text();
+    const imgDom = new JSDOM(imgText);
+    const imgCollection = imgDom.window.document.getElementsByClassName(
+      "product__thumb-item"
+    );
+    for (let j = 0; j < imgCollection.length; j++) {
+      imgArray[i].push("https:" + imgCollection[j].querySelector("a").href);
+    }
+    // console.log(imgArray[i]);
+
+    titleArray.push(info[i].querySelector("a").title);
+    let price = info[i]
+      .getElementsByClassName("money")[1]
+      .innerHTML.split("$")[1]
+      .split(" ")[0];
+
+    priceArray.push(Number(price));
+
+    let name = titleArray[i];
+    let imgURL = imgArray[i];
+    let size = {
+      s: Math.floor(Math.random() * 11),
+      m: Math.floor(Math.random() * 11),
+      l: Math.floor(Math.random() * 11),
+    };
+    let color = "Other";
+    if (name.toLowerCase().includes("black")) {
+      color = "Black";
+    } else if (name.toLowerCase().includes("blue")) {
+      color = "Blue";
+    } else if (name.toLowerCase().includes("coal")) {
+      color = "Coal";
+    } else if (name.toLowerCase().includes("grey")) {
+      color = "Grey";
+    } else if (name.toLowerCase().includes("white")) {
+      color = "White";
+    } else if (name.toLowerCase().includes("red")) {
+      color = "Red";
+    } else if (name.toLowerCase().includes("pink")) {
+      color = "Pink";
+    } else if (name.toLowerCase().includes("brown")) {
+      color = "Brown";
+    } else if (name.toLowerCase().includes("green")) {
+      color = "Green";
+    }
+    let product = {
+      name: name,
+      price: price,
+      imgURL: imgURL,
+      gender: "girls",
+      color: color,
+      size: size,
+    };
+    await Product.create(product);
+  }
+  fs.writeFileSync(
+    path.resolve(__dirname, "imgArray.json"),
+    JSON.stringify(imgArray)
+  );
+
+  console.log("Finished girls' seeding");
+};
 const createAdmin = async () => {
   const salt = await bcrypt.genSalt(10);
   const password = "123";
@@ -207,5 +377,7 @@ mongoose.connect(MONGODB_URI).then(() => {
 });
 
 // createAdmin();
-webScraperFemale();
-webScraperMale();
+// webScraperFemale();
+// webScraperMale();
+// webScraperBoys();
+webScraperGirls();

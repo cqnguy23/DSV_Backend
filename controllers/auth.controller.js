@@ -1,5 +1,6 @@
 import Product from "../models/Product.model.js";
 import User from "../models/User.model.js";
+import bcrypt from "bcrypt";
 const authController = {};
 
 authController.register = async (req, res, next) => {
