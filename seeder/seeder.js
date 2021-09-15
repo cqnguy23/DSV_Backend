@@ -6,6 +6,7 @@ import fs from "fs";
 import path from "path";
 import env from "dotenv";
 import User from "../models/User.model.js";
+import emailController from "../utils/emailController.js";
 const __dirname = path.resolve();
 env.config();
 const { JSDOM } = jsdom;
@@ -380,4 +381,8 @@ mongoose.connect(MONGODB_URI).then(() => {
 // webScraperFemale();
 // webScraperMale();
 // webScraperBoys();
-webScraperGirls();
+// webScraperGirls();
+emailController.sendOrderConfirmation("quyenchuong1998@gmail.com", {
+  products: [{}],
+  totalPrice: 140.5,
+});

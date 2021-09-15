@@ -5,13 +5,20 @@ const orderSchema = new Schema(
     owner: {
       type: Schema.ObjectId,
       ref: "User",
+      required: true,
     },
     products: [
       {
-        type: Schema.ObjectId,
-        ref: "Product",
+        product: {
+          type: Schema.ObjectId,
+          ref: "Product",
+        },
+        orderedQuantity: Number,
+        orderedSize: String,
+        totalPrice: String,
       },
     ],
+    totalPrice: { type: Number, required: true },
   },
   {
     timestamps: true,
