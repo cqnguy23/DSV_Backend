@@ -6,7 +6,7 @@ import fs from "fs";
 import path from "path";
 import env from "dotenv";
 import User from "../models/User.model.js";
-import emailController from "../utils/emailController.js";
+import emailController from "../utils/emailUtils.js";
 const __dirname = path.resolve();
 env.config();
 const { JSDOM } = jsdom;
@@ -364,9 +364,7 @@ const webScraperGirls = async () => {
   console.log("Finished girls' seeding");
 };
 const createAdmin = async () => {
-  const salt = await bcrypt.genSalt(10);
-  const password = "123";
-  const pwd = await bcrypt.hash(password, salt);
+  const pwd = "123456";
   await User.create({
     email: "quyenchuong1998@gmail.com",
     password: pwd,
@@ -377,12 +375,8 @@ mongoose.connect(MONGODB_URI).then(() => {
   console.log("Mongoose connected");
 });
 
-// createAdmin();
+createAdmin();
 // webScraperFemale();
 // webScraperMale();
 // webScraperBoys();
 // webScraperGirls();
-emailController.sendOrderConfirmation("quyenchuong1998@gmail.com", {
-  products: [{}],
-  totalPrice: 140.5,
-});

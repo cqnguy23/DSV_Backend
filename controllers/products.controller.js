@@ -5,16 +5,20 @@ const productsController = {};
 productsController.getProducts = async (req, res, next) => {
   let { page, limit } = { ...req.query };
   const gender = req.params.gender;
-  const numsTotal = await Product.find({ gender }).count();
-  page = parseInt(page) || 1;
-  limit = parseInt(limit) || 20;
-  const offset = limit * (page - 1);
-  let products = await Product.find({ gender }).skip(offset).limit(limit);
+  try {
+    const numsTotal = await Product.find({ gender }).count();
+    page = parseInt(page) || 1;
+    limit = parseInt(limit) || 20;
+    const offset = limit * (page - 1);
+    let products = await Product.find({ gender }).skip(offset).limit(limit);
 
-  res.status(200).send({
-    products: products,
-    numsTotal: numsTotal,
-  });
+    return res.status(200).send({
+      products: products,
+      numsTotal: numsTotal,
+    });
+  } catch (err) {
+    next(err);
+  }
 };
 
 productsController.getSingleProduct = async (req, res, next) => {

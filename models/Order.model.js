@@ -19,6 +19,12 @@ const orderSchema = new Schema(
       },
     ],
     totalPrice: { type: Number, required: true },
+    status: {
+      type: String,
+      enum: ["Pending", "Completed", "Cancelled"],
+      default: "Pending",
+      required: true,
+    },
   },
   {
     timestamps: true,

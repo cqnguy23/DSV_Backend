@@ -1,19 +1,8 @@
-import nodemailer from "nodemailer";
-import mjml2html from "mjml";
-const emailController = {};
-let transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL,
-    pass: process.env.PASSWORD,
-  },
-});
+import pkg from "handlebars";
 
-emailController.sendOrderConfirmation = async (email, order) => {
-  const { products, totalPrice } = order;
-  const htmlOutput = mjml2html(
-    `
-    <mjml>
+const orderConfirmTemplate = (products, totalPrice) => {
+  return `
+<mjml>
         <mj-body>
             <mj-section>
             <mj-column>
@@ -57,14 +46,6 @@ emailController.sendOrderConfirmation = async (email, order) => {
             </mj-section>
         </mj-body>
 </mjml>
-  `
-  );
-  let info = await transporter.sendMail({
-    from: "Chuong Nguyen <quyenchuong.nguyen@gmail.com>",
-    to: email,
-    subject: "Order confirmation from DSV Fashion",
-    html: htmlOutput.html,
-  });
-  return info;
+`;
 };
-export default emailController;
+export default orderConfirmTemplate;

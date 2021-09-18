@@ -6,6 +6,7 @@ import bcrypt from "bcrypt";
 env.config();
 
 const SECRET_KEY = process.env.SECRET_KEY;
+const ADMIN_SECRET_KEY = process.env.ADMIN_SECRET_KEY;
 const Schema = mongoose.Schema;
 const userSchema = new Schema({
   email: String,
@@ -29,8 +30,15 @@ userSchema.post("save", async function () {
 });
 
 userSchema.methods.generateToken = function () {
-  console.log(SECRET_KEY);
-  const token = jwt.sign({ id: this._id }, SECRET_KEY, { expiresIn: "24h" });
+  const token = jwt.sign({ id: this._id, role: this.role }, SECRET_KEY, {
+    expiresIn: "24h",
+  });
+  return token;
+};
+userSchema.methods.generateAdminToken = function () {
+  const token = jwt.sign({ id: this._id, role: this.role }, ADMIN_SECRET_KEY, {
+    expiresIn: "1h",
+  });
   return token;
 };
 const User = mongoose.model("User", userSchema);
