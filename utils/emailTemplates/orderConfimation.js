@@ -1,5 +1,3 @@
-import pkg from "handlebars";
-
 const orderConfirmTemplate = (products, totalPrice) => {
   return `
 <mjml>

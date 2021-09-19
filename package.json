@@ -22,6 +22,7 @@
     "jsdom": "^16.7.0",
     "jsonwebtoken": "^8.5.1",
     "mjml": "^4.10.3",
+    "moment": "^2.29.1",
     "mongoose": "^6.0.4",
     "morgan": "~1.9.1",
     "node-fetch": "^3.0.0",

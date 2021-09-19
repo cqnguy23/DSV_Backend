@@ -11,7 +11,9 @@ const productSchema = new Schema(
     },
     imgURL: [String],
     category: String,
+    brand: String,
     price: Number,
+    sold: { type: Number, default: 0 },
     color: {
       type: String,
       enum: [
@@ -27,7 +29,7 @@ const productSchema = new Schema(
         "Grey",
         "Other",
       ],
-      default: "Black",
+      default: "Other",
     },
     rating: Number,
     reviewsID: [

@@ -2,7 +2,7 @@ import Order from "../models/Order.model.js";
 import Product from "../models/Product.model.js";
 import emailController from "../utils/emailUtils.js";
 import stringUtils from "../utils/stringUtils.js";
-
+import moment from "moment";
 const orderController = {};
 
 orderController.addToOrder = async (req, res, next) => {
@@ -57,27 +57,58 @@ orderController.addToOrder = async (req, res, next) => {
 };
 
 orderController.getOrders = async (req, res, next) => {
-  let { page, limit } = { ...req.query };
+  let { page, limit, keyword, startDate, endDate } = req.query;
   page = parseInt(page) || 1;
   limit = parseInt(limit) || 10;
   const offset = limit * (page - 1);
-  try {
-    const totalOrders = await Order.find({}).count();
-    const orders = await Order.find({})
-      .skip(offset)
-      .limit(limit)
-      .populate("owner")
-      .populate({
-        path: "products",
-        populate: {
-          path: "product",
-          model: "Product",
-        },
-      });
 
-    return res.status(200).send({ orders: orders, totalOrders: totalOrders });
-  } catch (err) {
-    next(err);
+  if (startDate && endDate) {
+    const start = moment(startDate);
+    const end = moment(endDate);
+    try {
+      const orders = await Order.find({})
+        .sort({ createdAt: -1 })
+        .populate("owner")
+        .populate({
+          path: "products",
+          populate: {
+            path: "product",
+            model: "Product",
+          },
+        });
+      let filteredOrders = orders.filter((order) => {
+        const target = moment(order.createdAt);
+        if (target.isBetween(start, end, "days", "[]")) return true;
+        else return false;
+      });
+      const filteredTotal = filteredOrders.length;
+      filteredOrders = filteredOrders.slice(offset, offset + limit);
+      return res
+        .status(200)
+        .send({ orders: filteredOrders, totalOrders: filteredTotal });
+    } catch (err) {
+      next(err);
+    }
+  } else {
+    try {
+      const totalOrders = await Order.find({}).count();
+      const orders = await Order.find({})
+        .sort({ createdAt: -1 })
+        .skip(offset)
+        .limit(limit)
+        .populate("owner")
+        .populate({
+          path: "products",
+          populate: {
+            path: "product",
+            model: "Product",
+          },
+        });
+
+      return res.status(200).send({ orders: orders, totalOrders: totalOrders });
+    } catch (err) {
+      next(err);
+    }
   }
 };
 orderController.updateOrder = async (req, res, next) => {

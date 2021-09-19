@@ -7,5 +7,5 @@ mongoose.connect(MONGODB_URI).then(() => {
 });
 
 Product.remove({}, () => {
-  console.log("Delete tickets");
+  console.log("Delete products");
 });
