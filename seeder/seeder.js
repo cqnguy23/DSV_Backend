@@ -409,10 +409,15 @@ const createAdmin = async () => {
 mongoose.connect(MONGODB_URI).then(() => {
   console.log("Mongoose connected");
 });
-
+const test = async () => {
+  const gender = null;
+  const products = await Product.find({}).count();
+  console.log(products);
+};
 // createAdmin();
 // webScraperFemale();
 // webScraperMale();
 // webScraperBoys();
 // webScraperGirls();
 // assignCategory();
+// test();

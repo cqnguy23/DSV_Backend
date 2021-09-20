@@ -57,9 +57,10 @@ orderController.addToOrder = async (req, res, next) => {
 };
 
 orderController.getOrders = async (req, res, next) => {
-  let { page, limit, keyword, startDate, endDate } = req.query;
+  let { page, limit, search, startDate, endDate } = req.query;
   page = parseInt(page) || 1;
   limit = parseInt(limit) || 10;
+  search = search || "";
   const offset = limit * (page - 1);
 
   if (startDate && endDate) {
@@ -78,7 +79,11 @@ orderController.getOrders = async (req, res, next) => {
         });
       let filteredOrders = orders.filter((order) => {
         const target = moment(order.createdAt);
-        if (target.isBetween(start, end, "days", "[]")) return true;
+        if (
+          target.isBetween(start, end, "days", "[]") &&
+          order.products[0].product.name.includes(search)
+        )
+          return true;
         else return false;
       });
       const filteredTotal = filteredOrders.length;
@@ -94,8 +99,6 @@ orderController.getOrders = async (req, res, next) => {
       const totalOrders = await Order.find({}).count();
       const orders = await Order.find({})
         .sort({ createdAt: -1 })
-        .skip(offset)
-        .limit(limit)
         .populate("owner")
         .populate({
           path: "products",
@@ -104,8 +107,15 @@ orderController.getOrders = async (req, res, next) => {
             model: "Product",
           },
         });
+      let filteredOrders = orders.filter((order) =>
+        order.products[0].product.name.includes(search)
+      );
+      const filteredTotal = filteredOrders.length;
+      filteredOrders = filteredOrders.slice(offset, offset + limit);
 
-      return res.status(200).send({ orders: orders, totalOrders: totalOrders });
+      return res
+        .status(200)
+        .send({ orders: filteredOrders, totalOrders: filteredTotal });
     } catch (err) {
       next(err);
     }

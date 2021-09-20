@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import Product from "./Product.model.js";
 const Schema = mongoose.Schema;
 const orderSchema = new Schema(
   {
@@ -30,7 +31,26 @@ const orderSchema = new Schema(
     timestamps: true,
   }
 );
-
+orderSchema.post("save", async function () {
+  try {
+    const products = this.products;
+    for (const product of products) {
+      const key = "size." + product.orderedSize;
+      await Product.findByIdAndUpdate(
+        product.product,
+        {
+          $inc: {
+            sold: product.orderedQuantity,
+            [key]: -1 * product.orderedQuantity,
+          },
+        },
+        { new: true }
+      );
+    }
+  } catch (err) {
+    console.log(err);
+  }
+});
 const Order = mongoose.model("Order", orderSchema);
 
 export default Order;
