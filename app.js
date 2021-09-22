@@ -5,6 +5,7 @@ import cors from "cors";
 import env from "dotenv";
 import mongoose from "mongoose";
 import indexRouter from "./api/index.js";
+import Category from "./models/Category.model.js";
 
 env.config();
 
@@ -22,6 +23,7 @@ app.get("/", (req, res, next) => {
   res.send("Welcome to DSV's Backend");
 });
 app.use("/api", indexRouter);
+
 app.use((req, res, next) => {
   const error = new Error("Not Found");
   error.statusCode = 404;

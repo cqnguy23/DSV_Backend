@@ -43,10 +43,8 @@ orderController.addToOrder = async (req, res, next) => {
         },
       })
       .populate("owner");
-    await emailController.sendOrderConfirmation(
-      emailOrder.owner.email,
-      emailOrder
-    );
+    emailController.sendOrderConfirmation(emailOrder.owner.email, emailOrder);
+    emailController.sendOrderPlacedConfirmation(emailOrder);
     return res.status(200).send({
       order: order,
       message: "Order created successfully!",
@@ -133,9 +131,12 @@ orderController.updateOrder = async (req, res, next) => {
         status,
       },
       { new: true }
-    );
+    ).populate("products.product");
     if (!order)
       return res.status(404).send("Order not found. Please check again later.");
+    console.log(order);
+    if (status === "Cancelled")
+      emailController.sendOrderCancelledConfirmation(order);
     return res.status(200).send({ order });
   } catch (err) {
     next(err);

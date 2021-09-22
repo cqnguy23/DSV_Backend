@@ -6,7 +6,7 @@ import fs from "fs";
 import path from "path";
 import env from "dotenv";
 import User from "../models/User.model.js";
-import emailController from "../utils/emailUtils.js";
+import Category from "../models/Category.model.js";
 const __dirname = path.resolve();
 env.config();
 const { JSDOM } = jsdom;
@@ -363,41 +363,85 @@ const webScraperGirls = async () => {
 
   console.log("Finished girls' seeding");
 };
-
+const createCategory = async () => {
+  const categories = [
+    "Jacket",
+    "Tee",
+    "Short",
+    "Hood",
+    "Pant",
+    "Top",
+    "Sweater",
+    "Jean",
+    "Shirt",
+    "Other",
+  ];
+  for (const category of categories) {
+    await Category.create({ name: category });
+  }
+  console.log("Finished creating category");
+};
 const assignCategory = async () => {
   const products = await Product.find({});
   const brand = ["Gucci", "BOSS", "Dior", "Lacoste", "Prada", "LV"];
 
   for (const product of products) {
     if (product.name.toLowerCase().includes("jacket")) {
-      await Product.findByIdAndUpdate(product._id, { category: "Jacket" });
+      const category = await Category.find({ name: "Jacket" });
+      await Product.findByIdAndUpdate(product._id, {
+        $push: { category: category },
+      });
     } else if (product.name.toLowerCase().includes("tee")) {
-      await Product.findByIdAndUpdate(product._id, { category: "Tee" });
+      const category = await Category.find({ name: "Tee" });
+      await Product.findByIdAndUpdate(product._id, {
+        $push: { category: category },
+      });
     } else if (product.name.toLowerCase().includes("short")) {
-      await Product.findByIdAndUpdate(product._id, { category: "Short" });
+      const category = await Category.find({ name: "Short" });
+      await Product.findByIdAndUpdate(product._id, {
+        $push: { category: category },
+      });
     } else if (product.name.toLowerCase().includes("hood")) {
-      await Product.findByIdAndUpdate(product._id, { category: "Hood" });
+      const category = await Category.find({ name: "Hood" });
+      await Product.findByIdAndUpdate(product._id, {
+        $push: { category: category },
+      });
     } else if (product.name.toLowerCase().includes("pant")) {
-      await Product.findByIdAndUpdate(product._id, { category: "Pant" });
+      const category = await Category.find({ name: "Pant" });
+      await Product.findByIdAndUpdate(product._id, {
+        $push: { category: category },
+      });
     } else if (product.name.toLowerCase().includes("top")) {
-      await Product.findByIdAndUpdate(product._id, { category: "Top" });
+      const category = await Category.find({ name: "Top" });
+      await Product.findByIdAndUpdate(product._id, {
+        $push: { category: category },
+      });
     } else if (product.name.toLowerCase().includes("sweater")) {
-      await Product.findByIdAndUpdate(product._id, { category: "Sweater" });
+      const category = await Category.find({ name: "Sweater" });
+      await Product.findByIdAndUpdate(product._id, {
+        $push: { category: category },
+      });
     } else if (product.name.toLowerCase().includes("jean")) {
-      await Product.findByIdAndUpdate(product._id, { category: "Jean" });
+      const category = await Category.find({ name: "Jean" });
+      await Product.findByIdAndUpdate(product._id, {
+        $push: { category: category },
+      });
     } else if (product.name.toLowerCase().includes("shirt")) {
-      await Product.findByIdAndUpdate(product._id, { category: "Shirt" });
+      const category = await Category.find({ name: "Shirt" });
+      await Product.findByIdAndUpdate(product._id, {
+        $push: { category: category },
+      });
     } else {
-      await Product.findByIdAndUpdate(product._id, { category: "Other" });
+      const category = await Category.find({ name: "Other" });
+      await Product.findByIdAndUpdate(product._id, {
+        $push: { category: category },
+      });
     }
-    await Product.findByIdAndUpdate(product._id, {
-      brand: brand[Math.floor(Math.random() * brand.length)],
-      sold: 0,
-    });
   }
   console.log("Finished update category");
-  console.log("Finished update brand");
+  // console.log("Finished update brand");
 };
+
 const createAdmin = async () => {
   const pwd = "123456";
   await User.create({
@@ -408,10 +452,16 @@ const createAdmin = async () => {
 };
 mongoose.connect(MONGODB_URI).then(() => {
   console.log("Mongoose connected");
+  // createCategory();
+  assignCategory();
 });
 const test = async () => {
   const gender = null;
-  const products = await Product.find({}).count();
+  const products = await Product.updateMany(
+    {},
+    { category: [] },
+    { new: true }
+  );
   console.log(products);
 };
 // createAdmin();
@@ -419,5 +469,4 @@ const test = async () => {
 // webScraperMale();
 // webScraperBoys();
 // webScraperGirls();
-// assignCategory();
 // test();

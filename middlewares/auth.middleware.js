@@ -45,14 +45,16 @@ authMiddleware.adminRequired = async (req, res, next) => {
     const invalidToken = await Token.findOne({ token: token });
     if (invalidToken) {
       return next(
-        new Error("Please log in again before performing this action!")
+        new Error("Please log in as an admin before performing this action!")
       );
     }
     jwt.verify(token, ADMIN_SECRET_KEY, function (error, payload) {
       if (error) {
         if (error.name === "TokenExpiredError") {
           return next(
-            new Error("Please log in again before performing this action!")
+            new Error(
+              "Please log in as an admin before performing this action!"
+            )
           );
         } else
           return next(

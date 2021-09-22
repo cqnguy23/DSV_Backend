@@ -3,16 +3,17 @@ const Schema = mongoose.Schema;
 
 const productSchema = new Schema(
   {
-    name: String,
+    name: { type: String, required: true },
     size: { s: Number, m: Number, l: Number },
     gender: {
       type: String,
       enum: ["men", "women", "boys", "girls"],
     },
     imgURL: [String],
-    category: String,
+    category: [{ type: Schema.ObjectId, ref: "Category" }],
     brand: String,
     price: Number,
+    description: String,
     sold: { type: Number, default: 0 },
     color: {
       type: String,

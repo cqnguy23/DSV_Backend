@@ -37,7 +37,7 @@ userSchema.methods.generateToken = function () {
 };
 userSchema.methods.generateAdminToken = function () {
   const token = jwt.sign({ id: this._id, role: this.role }, ADMIN_SECRET_KEY, {
-    expiresIn: "1h",
+    expiresIn: "5h",
   });
   return token;
 };

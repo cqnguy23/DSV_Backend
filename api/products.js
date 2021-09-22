@@ -5,6 +5,11 @@ const router = express.Router();
 
 router.get("/gender/:gender", productsController.getProducts);
 router.get("/:id", productsController.getSingleProduct);
+router.post(
+  "/",
+  authMiddleware.adminRequired,
+  productsController.addSingleProduct
+);
 router.patch(
   "/:id",
   authMiddleware.adminRequired,
