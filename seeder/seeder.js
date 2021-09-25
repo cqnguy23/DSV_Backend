@@ -5,7 +5,7 @@ import bcrypt from "bcrypt";
 import fs from "fs";
 import path from "path";
 import env from "dotenv";
-import User from "../models/User.model.js";
+import User from "../models/user.model.js";
 import Category from "../models/Category.model.js";
 const __dirname = path.resolve();
 env.config();
