@@ -450,10 +450,40 @@ const createAdmin = async () => {
     role: "seller",
   });
 };
+const assignCategoryToGender = async () => {
+  const categories = await Category.find({});
+  const genderArr = ["men", "women", "girls", "boys"];
+  const products = await Product.find({}).populate("category");
+  for (const category of categories) {
+    const gender = new Set();
+    for (const gen of genderArr) {
+      const filteredProducts = products.filter(
+        (product) => product.gender === gen
+      );
+      for (const prod of filteredProducts) {
+        if (
+          prod.category.some(
+            (singleCategory) => singleCategory.name === category.name
+          )
+        )
+          gender.add(gen);
+      }
+    }
+    const genderArray = Array.from(gender);
+    const updatedCategory = await Category.findOneAndUpdate(
+      { name: category.name },
+      { gender: genderArray }
+    );
+    console.log("category", category.name);
+    console.log("gender", genderArray);
+  }
+  /*for each category, search at least one product in a gender to have that category. 
+  If success, add the gender to current category */
+};
 mongoose.connect(MONGODB_URI).then(() => {
   console.log("Mongoose connected");
   // createCategory();
-  assignCategory();
+  // assignCategory();
 });
 const test = async () => {
   const gender = null;
@@ -464,9 +494,35 @@ const test = async () => {
   );
   console.log(products);
 };
+const addDress = async () => {
+  const category = await Category.findOne({ name: "Dress" });
+  const products = await Product.find({});
+  for (const product of products) {
+    if (product.name.toLowerCase().includes("dress")) {
+      await Product.findByIdAndUpdate(product._id, {
+        category: [],
+      });
+      await Product.findByIdAndUpdate(product._id, {
+        $push: { category: category },
+      });
+    }
+  }
+};
+const assignImg = async () => {
+  const user = await User.updateMany(
+    {},
+    {
+      profileImg:
+        "https://devshift.biz/wp-content/uploads/2017/04/profile-icon-png-898.png",
+    }
+  );
+};
 // createAdmin();
 // webScraperFemale();
 // webScraperMale();
 // webScraperBoys();
 // webScraperGirls();
 // test();
+// assignCategoryToGender();
+// addDress();
+assignImg();

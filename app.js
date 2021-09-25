@@ -5,7 +5,6 @@ import cors from "cors";
 import env from "dotenv";
 import mongoose from "mongoose";
 import indexRouter from "./api/index.js";
-import Category from "./models/Category.model.js";
 
 env.config();
 

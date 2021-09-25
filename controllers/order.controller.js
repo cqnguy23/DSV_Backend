@@ -152,4 +152,18 @@ orderController.deleteOrder = async (req, res, next) => {
     next(err);
   }
 };
+
+orderController.getAllOrders = async (req, res, next) => {
+  try {
+    const orders = await Order.find({})
+      .sort({ createdAt: -1 })
+      .populate("products.product")
+      .populate("owner");
+    console.log(orders);
+    return res.status(200).send(orders);
+  } catch (err) {
+    next(err);
+  }
+};
+
 export default orderController;

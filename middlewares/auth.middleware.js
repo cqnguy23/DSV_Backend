@@ -39,6 +39,7 @@ authMiddleware.adminRequired = async (req, res, next) => {
   try {
     let token = req.headers.adminauthorization;
     if (!token) {
+      console.log("Here");
       return res.status(401).send("Login required.");
     }
     token = token.split(" ")[1];

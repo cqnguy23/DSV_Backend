@@ -12,6 +12,7 @@ const userSchema = new Schema({
   email: String,
   name: String,
   balance: { type: Number, default: 0 },
+  profileImg: String,
   password: String,
   role: {
     type: String,

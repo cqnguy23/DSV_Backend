@@ -4,98 +4,76 @@ import Product from "../models/Product.model.js";
 const productsController = {};
 
 productsController.getProducts = async (req, res, next) => {
-  let { page, limit, sortBy, search, category, size, brand } = { ...req.query };
+  let { page, limit, sortBy, search, category, size, brand, color } = {
+    ...req.query,
+  };
   let gender = req.params.gender;
   search = search || "";
   let products = [];
   let numsTotal = 0;
-  if (gender != "all") {
-    try {
-      //customer get
-      sortBy = sortBy || "reversePrice";
-      numsTotal = await Product.find({ gender }).count();
-      page = parseInt(page) || 1;
-      limit = parseInt(limit) || 20;
-      const offset = limit * (page - 1);
-      if (sortBy == "alpha") {
-        products = await Product.find({ gender }, { sold: false })
-          .sort({ name: 1 })
-          .skip(offset)
-          .limit(limit)
-          .populate("category");
-      } else if (sortBy === "reverseAlpha") {
-        products = await Product.find({ gender }, { sold: false })
-          .sort({ name: -1 })
-          .skip(offset)
-          .limit(limit)
-          .populate("category");
-      } else if (sortBy === "price") {
-        products = await Product.find({ gender }, { sold: false })
-          .sort({ price: 1 })
-          .skip(offset)
-          .limit(limit)
-          .populate("category");
-      } else if (sortBy === "reversePrice") {
-        products = await Product.find({ gender }, { sold: false })
-          .sort({ price: -1 })
-          .skip(offset)
-          .limit(limit)
-          .populate("category");
-      }
-      if (category) {
-        products = products.filter((product) =>
-          product.category.some((singleCategory) => {
-            return singleCategory.name.includes(category);
-          })
-        );
-      }
-      //filter by category
-
-      if (size) {
-        const sizeArr = size.split(",").filter((i) => i);
-        console.log(sizeArr);
-        products = products.filter((product) =>
-          sizeArr.every((singleSize) => product.size[singleSize] !== 0)
-        );
-      }
-      if (brand) {
-        products = products.filter(
-          (product) => product.brand.toLowerCase() === brand.toLowerCase()
-        );
-      }
-    } catch (err) {
-      return next(err);
+  try {
+    //customer get
+    sortBy = sortBy || "reversePrice";
+    numsTotal = await Product.find({ gender }).count();
+    page = parseInt(page) || 1;
+    limit = parseInt(limit) || 20;
+    const offset = limit * (page - 1);
+    if (sortBy == "alpha") {
+      products = await Product.find({ gender }, { sold: false })
+        .sort({ name: 1 })
+        .populate("category");
+    } else if (sortBy === "reverseAlpha") {
+      products = await Product.find({ gender }, { sold: false })
+        .sort({ name: -1 })
+        .populate("category");
+    } else if (sortBy === "price") {
+      products = await Product.find({ gender }, { sold: false })
+        .sort({ price: 1 })
+        .populate("category");
+    } else if (sortBy === "reversePrice") {
+      products = await Product.find({ gender }, { sold: false })
+        .sort({ price: -1 })
+        .populate("category");
     }
-  } else {
-    try {
-      //admin get
-      sortBy = sortBy || "addedDate";
-      numsTotal = await Product.find({ name: { $regex: search } }).count();
-      page = parseInt(page) || 1;
-      limit = parseInt(limit) || 8;
-      const offset = limit * (page - 1);
-      if (sortBy == "addedDate") {
-        products = await Product.find({ name: { $regex: search } })
-          .populate("category")
-          .sort({ createdAt: -1 })
-          .skip(offset)
-          .limit(limit);
-      } else if (sortBy == "alpha") {
-        products = await Product.find({ name: { $regex: search } })
-          .populate("category")
-          .sort({ name: 1 })
-          .skip(offset)
-          .limit(limit);
-      } else {
-        products = await Product.find({ name: { $regex: search } })
-          .populate("category")
-          .sort({ name: -1 })
-          .skip(offset)
-          .limit(limit);
-      }
-    } catch (err) {
-      return next(err);
+    if (category) {
+      products = products.filter((product) =>
+        product.category.some((singleCategory) => {
+          console.log(singleCategory.name);
+          return singleCategory.name.includes(category);
+        })
+      );
+      console.log(products);
     }
+    if (size) {
+      const sizeArr = size.split(",").filter((i) => i);
+      console.log(sizeArr);
+      products = products.filter((product) =>
+        sizeArr.every((singleSize) => product.size[singleSize] !== 0)
+      );
+    }
+    if (brand) {
+      const brandArr = brand.split(",").filter((i) => i);
+      console.log(brandArr);
+      products = products.filter((product) =>
+        brandArr.some(
+          (singleBrand) =>
+            product.brand.toLowerCase() === singleBrand.toLowerCase()
+        )
+      );
+    }
+    if (color) {
+      const colorArr = color.split(",").filter((i) => i);
+      products = products.filter((product) =>
+        colorArr.some(
+          (singleColor) =>
+            product.color.toLowerCase() === singleColor.toLowerCase()
+        )
+      );
+    }
+    numsTotal = products.length;
+    products = products.slice(offset, offset + limit);
+  } catch (err) {
+    return next(err);
   }
 
   return res.status(200).send({
@@ -103,7 +81,56 @@ productsController.getProducts = async (req, res, next) => {
     numsTotal: numsTotal,
   });
 };
+productsController.getProductsAdmin = async (req, res, next) => {
+  let { page, limit, sortBy, search } = { ...req.query };
+  search = search || "";
+  let products = [];
+  let numsTotal = 0;
+  try {
+    //admin get
+    sortBy = sortBy || "addedDate";
+    numsTotal = await Product.find({ name: { $regex: search } }).count();
+    page = parseInt(page) || 1;
+    limit = parseInt(limit) || 8;
+    const offset = limit * (page - 1);
+    if (sortBy === "addedDate") {
+      products = await Product.find({ name: { $regex: search } })
+        .populate("category")
+        .sort({ createdAt: -1 })
+        .skip(offset)
+        .limit(limit);
+    } else if (sortBy === "alpha") {
+      products = await Product.find({ name: { $regex: search } })
+        .populate("category")
+        .sort({ name: 1 })
+        .skip(offset)
+        .limit(limit);
+    } else if (sortBy === "reverseAlpha") {
+      products = await Product.find({ name: { $regex: search } })
+        .populate("category")
+        .sort({ name: -1 })
+        .skip(offset)
+        .limit(limit);
+    }
+  } catch (err) {
+    return next(err);
+  }
 
+  return res.status(200).send({
+    products: products,
+    numsTotal: numsTotal,
+  });
+};
+productsController.getAllProductsAdmin = async (req, res, next) => {
+  try {
+    //admin get
+    const products = await Product.find({}).sort({ createdAt: -1 });
+    console.log(products);
+    return res.status(200).send(products);
+  } catch (err) {
+    return next(err);
+  }
+};
 productsController.getSingleProduct = async (req, res, next) => {
   const id = req.params.id;
   if (!id) return res.status(400).send("Missing id params!");
@@ -112,7 +139,16 @@ productsController.getSingleProduct = async (req, res, next) => {
     if (!product) return res.status(404).send("Cannot find selected product.");
     const quantities = Object.values(product.size);
     const sum = quantities.reduce((prev, cur) => prev + cur, 0);
-    return res.status(200).send({ product: product, quantity: sum });
+    const brand = product.brand;
+    const gender = product.gender;
+    const similarBrandProducts = await Product.find({
+      _id: { $ne: product._id },
+      brand,
+      gender,
+    }).limit(4);
+    return res
+      .status(200)
+      .send({ product: product, quantity: sum, similarBrandProducts });
   } catch (err) {
     next(err);
   }

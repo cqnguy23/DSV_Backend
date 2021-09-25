@@ -8,6 +8,10 @@
     "dev": "nodemon ./bin/www",
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --watchAll"
   },
+  "engines": {
+    "node": "16.x",
+    "npm": "6.x"
+  },
   "dependencies": {
     "bcrypt": "^5.0.1",
     "cookie-parser": "~1.4.4",

@@ -4,6 +4,16 @@ import authMiddleware from "../middlewares/auth.middleware.js";
 const router = express.Router();
 
 router.get("/gender/:gender", productsController.getProducts);
+router.get(
+  "/admin",
+  authMiddleware.adminRequired,
+  productsController.getProductsAdmin
+);
+router.get(
+  "/admin/all",
+  authMiddleware.adminRequired,
+  productsController.getAllProductsAdmin
+);
 router.get("/:id", productsController.getSingleProduct);
 router.post(
   "/",
@@ -17,7 +27,7 @@ router.patch(
 );
 router.delete(
   "/:id",
-  authMiddleware.loginRequired,
+  authMiddleware.adminRequired,
   productsController.removeSingleProduct
 );
 

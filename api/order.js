@@ -5,6 +5,7 @@ const router = express.Router();
 /* GET users listing. */
 
 router.get("/", authMiddleware.adminRequired, orderController.getOrders);
+router.get("/all", authMiddleware.adminRequired, orderController.getAllOrders);
 router.post("/", authMiddleware.loginRequired, orderController.addToOrder);
 router.patch("/:id", authMiddleware.adminRequired, orderController.updateOrder);
 router.delete(
