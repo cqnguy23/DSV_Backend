@@ -25,6 +25,11 @@ router.patch(
   authMiddleware.adminRequired,
   productsController.editSingleProduct
 );
+router.patch(
+  "/",
+  authMiddleware.adminRequired,
+  productsController.editUsingFileImport
+);
 router.delete(
   "/:id",
   authMiddleware.adminRequired,

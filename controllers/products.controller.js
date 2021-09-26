@@ -229,4 +229,31 @@ productsController.addSingleProduct = async (req, res, next) => {
     next(err);
   }
 };
+productsController.editUsingFileImport = async (req, res, next) => {
+  const { products } = req.body;
+
+  if (!products)
+    return res.status(400).send("Missing products in request body");
+  console.log(req.body);
+  try {
+    for (const product of products) {
+      const newProduct = await Product.findByIdAndUpdate(
+        { _id: product.id },
+        {
+          "size.s": product.s,
+          "size.m": product.m,
+          "size.l": product.l,
+          price: product.price,
+        },
+        { new: true }
+      );
+      if (!product)
+        return res.status(404).send("Cannot find selected product for update.");
+    }
+    const updateProducts = await Product.find({}).sort({ createdAt: -1 });
+    return res.status(200).send({ products: updateProducts });
+  } catch (err) {
+    next(err);
+  }
+};
 export default productsController;
