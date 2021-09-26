@@ -438,7 +438,6 @@ const assignCategory = async () => {
       });
     }
   }
-  console.log("Finished update category");
   // console.log("Finished update brand");
 };
 
