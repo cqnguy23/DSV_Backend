@@ -1,5 +1,6 @@
 import env from "dotenv";
 import jwt from "jsonwebtoken";
+import Order from "../models/Order.model.js";
 import Token from "../models/TokenList.model.js";
 const authMiddleware = {};
 
@@ -31,7 +32,7 @@ authMiddleware.loginRequired = async (req, res, next) => {
       next();
     });
   } catch (err) {
-    next(err);
+    return next(err);
   }
 };
 
@@ -71,7 +72,39 @@ authMiddleware.adminRequired = async (req, res, next) => {
       next();
     });
   } catch (err) {
-    next(err);
+    return next(err);
+  }
+};
+
+authMiddleware.reviewRequired = async (req, res, next) => {
+  try {
+    const userId = req.userId;
+    const productID = req.params.id;
+    const orders = await Order.find({ owner: userId }).populate(
+      "products.product"
+    );
+    if (orders.length === 0) {
+      return next(
+        new Error("You need to purchase this item before making a review.")
+      );
+    }
+    let hasOrdered = false;
+    for (const order of orders) {
+      for (const product of order.products) {
+        if (productID == product.product._id) {
+          hasOrdered = true;
+          break;
+        }
+      }
+    }
+    if (!hasOrdered) {
+      return next(
+        new Error("You need to purchase this item before making a review.")
+      );
+    }
+    next();
+  } catch (err) {
+    return next(err);
   }
 };
 export default authMiddleware;
