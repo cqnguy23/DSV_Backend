@@ -228,7 +228,23 @@ productsController.editUsingFileImport = async (req, res, next) => {
   if (!products)
     return res.status(400).send("Missing products in request body");
   try {
-    for (const product of products) {
+    const originalProducts = await Product.find({});
+    const updatedProducts = [];
+    for (const originalProduct of originalProducts) {
+      for (const csvProduct of products) {
+        if (originalProduct._id.toString() === csvProduct.id) {
+          if (
+            parseInt(originalProduct.size.s) !== parseInt(csvProduct.s) ||
+            parseInt(originalProduct.size.m) !== parseInt(csvProduct.m) ||
+            parseInt(originalProduct.size.l) !== parseInt(csvProduct.l) ||
+            parseFloat(originalProduct.price) !== parseFloat(csvProduct.price)
+          ) {
+            updatedProducts.push(csvProduct);
+          }
+        }
+      }
+    }
+    for (const product of updatedProducts) {
       const newProduct = await Product.findByIdAndUpdate(
         { _id: product.id },
         {
@@ -244,7 +260,8 @@ productsController.editUsingFileImport = async (req, res, next) => {
     }
     const updateProducts = await Product.find({})
       .sort({ createdAt: -1 })
-      .limit(10);
+      .limit(10)
+      .populate("category");
     return res.status(200).send({ products: updateProducts });
   } catch (err) {
     next(err);
