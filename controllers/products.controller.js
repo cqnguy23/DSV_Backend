@@ -242,7 +242,9 @@ productsController.editUsingFileImport = async (req, res, next) => {
       if (!product)
         return res.status(404).send("Cannot find selected product for update.");
     }
-    const updateProducts = await Product.find({}).sort({ createdAt: -1 });
+    const updateProducts = await Product.find({})
+      .sort({ createdAt: -1 })
+      .limit(8);
     return res.status(200).send({ products: updateProducts });
   } catch (err) {
     next(err);
