@@ -38,22 +38,18 @@ productsController.getProducts = async (req, res, next) => {
     if (category) {
       products = products.filter((product) =>
         product.category.some((singleCategory) => {
-          console.log(singleCategory.name);
           return singleCategory.name.includes(category);
         })
       );
-      console.log(products);
     }
     if (size) {
       const sizeArr = size.split(",").filter((i) => i);
-      console.log(sizeArr);
       products = products.filter((product) =>
         sizeArr.every((singleSize) => product.size[singleSize] !== 0)
       );
     }
     if (brand) {
       const brandArr = brand.split(",").filter((i) => i);
-      console.log(brandArr);
       products = products.filter((product) =>
         brandArr.some(
           (singleBrand) =>
@@ -125,7 +121,6 @@ productsController.getAllProductsAdmin = async (req, res, next) => {
   try {
     //admin get
     const products = await Product.find({}).sort({ createdAt: -1 });
-    console.log(products);
     return res.status(200).send(products);
   } catch (err) {
     return next(err);
@@ -158,7 +153,6 @@ productsController.editSingleProduct = async (req, res, next) => {
   const id = req.params.id;
   if (!id) return res.status(400).send("Missing id params");
   const { size } = req.body;
-  console.log(req.body);
   try {
     let product = await Product.findByIdAndUpdate(id, { size }, { new: true });
     if (!product) return res.status(404).send("Cannot find selected product.");
@@ -210,7 +204,6 @@ productsController.addSingleProduct = async (req, res, next) => {
     const productCategories = [];
     for (const singleCategory of category) {
       const temp = await Category.findOne({ name: singleCategory });
-      console.log({ temp });
       if (temp) productCategories.push(temp._id);
     }
     const addedProduct = await Product.create({
@@ -234,7 +227,6 @@ productsController.editUsingFileImport = async (req, res, next) => {
 
   if (!products)
     return res.status(400).send("Missing products in request body");
-  console.log(req.body);
   try {
     for (const product of products) {
       const newProduct = await Product.findByIdAndUpdate(

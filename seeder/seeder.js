@@ -42,7 +42,6 @@ const webScraperFemale = async () => {
     for (let j = 0; j < imgCollection.length; j++) {
       imgArray[i].push("https:" + imgCollection[j].querySelector("a").href);
     }
-    // console.log(imgArray[i]);
   }
   for (let i = 0; i < info.length; i++) {
     const imgResp = await fetch(imgQuery[i]);

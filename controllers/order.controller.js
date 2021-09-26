@@ -28,7 +28,6 @@ orderController.addToOrder = async (req, res, next) => {
           .status(400)
           .send(tempProduct.name + " is out of stock. Please try again!");
     }
-    // console.log(orderedProducts);
     const order = await Order.create({
       owner: owner,
       products: orderedProducts,
@@ -134,7 +133,6 @@ orderController.updateOrder = async (req, res, next) => {
     ).populate("products.product");
     if (!order)
       return res.status(404).send("Order not found. Please check again later.");
-    console.log(order);
     if (status === "Cancelled")
       emailController.sendOrderCancelledConfirmation(order);
     return res.status(200).send({ order });
@@ -159,7 +157,6 @@ orderController.getAllOrders = async (req, res, next) => {
       .sort({ createdAt: -1 })
       .populate("products.product")
       .populate("owner");
-    console.log(orders);
     return res.status(200).send(orders);
   } catch (err) {
     next(err);
