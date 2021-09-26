@@ -244,7 +244,7 @@ productsController.editUsingFileImport = async (req, res, next) => {
     }
     const updateProducts = await Product.find({})
       .sort({ createdAt: -1 })
-      .limit(8);
+      .limit(10);
     return res.status(200).send({ products: updateProducts });
   } catch (err) {
     next(err);
